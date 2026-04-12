@@ -2472,36 +2472,34 @@ void mos6502::Op_ANE(uint16_t src)
    return;
 }
 
-void mos6502::Op_ARR(uint16_t src)
-{
-   bool carry = IF_CARRY();
-   uint8_t m = Read(src);
-   uint8_t res = m & A;
-   res >>= 1;
-   if (carry) {
-      res |= 0x80;
-   }
-   SET_CARRY((res >> 6) & 1);
-   SET_OVERFLOW(((res >> 6) ^ (res >> 5)) & 1);
-   SET_NEGATIVE(res & 0x80);
-   SET_ZERO(!res);
-
-   if (IF_DECIMAL())
-   {
-      // ARR in decimal mode routes signals through the ALU’s decimal
-      // adder path, but with no valid carry-in, so the outputs are
-      // garbage. It’s not emulatable in a meaningful way.
-
-      if ((res & 0xF) >= 0xA) {
-         res += 6;
-      }
-      if (res >= 0xA0) {
-         res += 0x60;
-      }
-   }
-
-   A = res;
-   return;
+void mos6502::Op_ARR(uint16_t src) {
+  const uint8_t imm = Read(src);
+  const bool C0 = IF_CARRY();
+  uint8_t and_pre = (uint8_t)(A & imm);
+  uint8_t pre = (uint8_t)((and_pre >> 1) | (C0 ? 0x80 : 0x00));
+  bool C = (pre >> 6) & 1;
+  bool V = ((pre >> 6) ^ (pre >> 5)) & 1;
+  uint8_t res = pre;
+  const bool D = IF_DECIMAL();
+  if ((D) || false) {
+    bool low_adj = (((and_pre & 0x0F) + (C0?1:0)) > 8);
+    if (low_adj) res = (uint8_t)(res + 0x06);
+    const bool preC = ((pre >> 6) & 1) != 0;
+    const int idx = (low_adj ? 2 : 0) + (preC ? 1 : 0);
+    uint8_t add_amt = (idx & 1) ? 0x60 : 0x00;
+    if (add_amt) res = (uint8_t)(res + add_amt);
+    switch (idx) {
+      case 0: /* C unchanged */ break;
+      case 1: /* C unchanged */ break;
+      case 2: C = (res >> 6) & 1; break;
+      case 3: C = (add_amt != 0); break;
+    }
+  }
+  SET_NEGATIVE(pre & 0x80);
+  SET_ZERO(pre == 0);
+  A = res;
+  SET_CARRY(C);
+  SET_OVERFLOW(V);
 }
 
 void mos6502::Op_DCP(uint16_t src)
