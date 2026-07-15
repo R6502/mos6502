@@ -1817,6 +1817,7 @@ uint8_t mos6502::GetResetY()
 
 void mos6502::Op_ILLEGAL(uint16_t src)
 {
+   (void) src;
    illegalOpcode = true;
 }
 
@@ -1879,6 +1880,7 @@ void mos6502::Op_ASL(uint16_t src)
 
 void mos6502::Op_ASL_ACC(uint16_t src)
 {
+   (void) src;
    uint8_t m = A;
    SET_CARRY(m & 0x80);
    m <<= 1;
@@ -1978,6 +1980,7 @@ void mos6502::Op_BPL(uint16_t src)
 
 void mos6502::Op_BRK(uint16_t src)
 {
+   (void) src;
    pc++;
    StackPush((pc >> 8) & 0xFF);
    StackPush(pc & 0xFF);
@@ -2015,24 +2018,28 @@ void mos6502::Op_BVS(uint16_t src)
 
 void mos6502::Op_CLC(uint16_t src)
 {
+   (void) src;
    SET_CARRY(0);
    return;
 }
 
 void mos6502::Op_CLD(uint16_t src)
 {
+   (void) src;
    SET_DECIMAL(0);
    return;
 }
 
 void mos6502::Op_CLI(uint16_t src)
 {
+   (void) src;
    SET_INTERRUPT(0);
    return;
 }
 
 void mos6502::Op_CLV(uint16_t src)
 {
+   (void) src;
    SET_OVERFLOW(0);
    return;
 }
@@ -2076,6 +2083,7 @@ void mos6502::Op_DEC(uint16_t src)
 
 void mos6502::Op_DEX(uint16_t src)
 {
+   (void) src;
    uint8_t m = X;
    m = (m - 1) & 0xFF;
    SET_NEGATIVE(m & 0x80);
@@ -2086,6 +2094,7 @@ void mos6502::Op_DEX(uint16_t src)
 
 void mos6502::Op_DEY(uint16_t src)
 {
+   (void) src;
    uint8_t m = Y;
    m = (m - 1) & 0xFF;
    SET_NEGATIVE(m & 0x80);
@@ -2114,6 +2123,7 @@ void mos6502::Op_INC(uint16_t src)
 
 void mos6502::Op_INX(uint16_t src)
 {
+   (void) src;
    uint8_t m = X;
    m = (m + 1) & 0xFF;
    SET_NEGATIVE(m & 0x80);
@@ -2123,6 +2133,7 @@ void mos6502::Op_INX(uint16_t src)
 
 void mos6502::Op_INY(uint16_t src)
 {
+   (void) src;
    uint8_t m = Y;
    m = (m + 1) & 0xFF;
    SET_NEGATIVE(m & 0x80);
@@ -2185,6 +2196,7 @@ void mos6502::Op_LSR(uint16_t src)
 
 void mos6502::Op_LSR_ACC(uint16_t src)
 {
+   (void) src;
    uint8_t m = A;
    SET_CARRY(m & 0x01);
    m >>= 1;
@@ -2195,6 +2207,7 @@ void mos6502::Op_LSR_ACC(uint16_t src)
 
 void mos6502::Op_NOP(uint16_t src)
 {
+   (void) src;
    return;
 }
 
@@ -2209,18 +2222,21 @@ void mos6502::Op_ORA(uint16_t src)
 
 void mos6502::Op_PHA(uint16_t src)
 {
+   (void) src;
    StackPush(A);
    return;
 }
 
 void mos6502::Op_PHP(uint16_t src)
 {
+   (void) src;
    StackPush(status | CONSTANT | BREAK);
    return;
 }
 
 void mos6502::Op_PLA(uint16_t src)
 {
+   (void) src;
    A = StackPop();
    SET_NEGATIVE(A & 0x80);
    SET_ZERO(!A);
@@ -2229,6 +2245,7 @@ void mos6502::Op_PLA(uint16_t src)
 
 void mos6502::Op_PLP(uint16_t src)
 {
+   (void) src;
    status = (status & (CONSTANT | BREAK)) | (StackPop() & ~(CONSTANT | BREAK));
    return;
 }
@@ -2248,6 +2265,7 @@ void mos6502::Op_ROL(uint16_t src)
 
 void mos6502::Op_ROL_ACC(uint16_t src)
 {
+   (void) src;
    uint16_t m = A;
    m <<= 1;
    if (IF_CARRY()) m |= 0x01;
@@ -2274,6 +2292,7 @@ void mos6502::Op_ROR(uint16_t src)
 
 void mos6502::Op_ROR_ACC(uint16_t src)
 {
+   (void) src;
    uint16_t m = A;
    if (IF_CARRY()) m |= 0x100;
    SET_CARRY(m & 0x01);
@@ -2287,6 +2306,7 @@ void mos6502::Op_ROR_ACC(uint16_t src)
 
 void mos6502::Op_RTI(uint16_t src)
 {
+   (void) src;
    uint8_t lo, hi;
 
    status = (status & (CONSTANT | BREAK)) | (StackPop() & ~(CONSTANT | BREAK));
@@ -2303,6 +2323,7 @@ void mos6502::Op_RTI(uint16_t src)
 
 void mos6502::Op_RTS(uint16_t src)
 {
+   (void) src;
    uint8_t lo, hi;
 
    lo = StackPop();
@@ -2347,18 +2368,21 @@ void mos6502::Op_SBC(uint16_t src)
 
 void mos6502::Op_SEC(uint16_t src)
 {
+   (void) src;
    SET_CARRY(1);
    return;
 }
 
 void mos6502::Op_SED(uint16_t src)
 {
+   (void) src;
    SET_DECIMAL(1);
    return;
 }
 
 void mos6502::Op_SEI(uint16_t src)
 {
+   (void) src;
    SET_INTERRUPT(1);
    return;
 }
@@ -2383,6 +2407,7 @@ void mos6502::Op_STY(uint16_t src)
 
 void mos6502::Op_TAX(uint16_t src)
 {
+   (void) src;
    uint8_t m = A;
    SET_NEGATIVE(m & 0x80);
    SET_ZERO(!m);
@@ -2392,6 +2417,7 @@ void mos6502::Op_TAX(uint16_t src)
 
 void mos6502::Op_TAY(uint16_t src)
 {
+   (void) src;
    uint8_t m = A;
    SET_NEGATIVE(m & 0x80);
    SET_ZERO(!m);
@@ -2401,6 +2427,7 @@ void mos6502::Op_TAY(uint16_t src)
 
 void mos6502::Op_TSX(uint16_t src)
 {
+   (void) src;
    uint8_t m = sp;
    SET_NEGATIVE(m & 0x80);
    SET_ZERO(!m);
@@ -2410,6 +2437,7 @@ void mos6502::Op_TSX(uint16_t src)
 
 void mos6502::Op_TXA(uint16_t src)
 {
+   (void) src;
    uint8_t m = X;
    SET_NEGATIVE(m & 0x80);
    SET_ZERO(!m);
@@ -2419,12 +2447,14 @@ void mos6502::Op_TXA(uint16_t src)
 
 void mos6502::Op_TXS(uint16_t src)
 {
+   (void) src;
    sp = X;
    return;
 }
 
 void mos6502::Op_TYA(uint16_t src)
 {
+   (void) src;
    uint8_t m = Y;
    SET_NEGATIVE(m & 0x80);
    SET_ZERO(!m);
@@ -2472,36 +2502,34 @@ void mos6502::Op_ANE(uint16_t src)
    return;
 }
 
-void mos6502::Op_ARR(uint16_t src)
-{
-   bool carry = IF_CARRY();
-   uint8_t m = Read(src);
-   uint8_t res = m & A;
-   res >>= 1;
-   if (carry) {
-      res |= 0x80;
-   }
-   SET_CARRY((res >> 6) & 1);
-   SET_OVERFLOW(((res >> 6) ^ (res >> 5)) & 1);
-   SET_NEGATIVE(res & 0x80);
-   SET_ZERO(!res);
-
-   if (IF_DECIMAL())
-   {
-      // ARR in decimal mode routes signals through the ALU’s decimal
-      // adder path, but with no valid carry-in, so the outputs are
-      // garbage. It’s not emulatable in a meaningful way.
-
-      if ((res & 0xF) >= 0xA) {
-         res += 6;
-      }
-      if (res >= 0xA0) {
-         res += 0x60;
-      }
-   }
-
-   A = res;
-   return;
+void mos6502::Op_ARR(uint16_t src) {
+  const uint8_t imm = Read(src);
+  const bool C0 = IF_CARRY();
+  uint8_t and_pre = (uint8_t)(A & imm);
+  uint8_t pre = (uint8_t)((and_pre >> 1) | (C0 ? 0x80 : 0x00));
+  bool C = (pre >> 6) & 1;
+  bool V = ((pre >> 6) ^ (pre >> 5)) & 1;
+  uint8_t res = pre;
+  const bool D = IF_DECIMAL();
+  if ((D) || false) {
+    bool low_adj = (((and_pre & 0x0F) + (C0?1:0)) > 8);
+    if (low_adj) res = (uint8_t)(res + 0x06);
+    const bool preC = ((pre >> 6) & 1) != 0;
+    const int idx = (low_adj ? 2 : 0) + (preC ? 1 : 0);
+    uint8_t add_amt = (idx & 1) ? 0x60 : 0x00;
+    if (add_amt) res = (uint8_t)(res + add_amt);
+    switch (idx) {
+      case 0: /* C unchanged */ break;
+      case 1: /* C unchanged */ break;
+      case 2: C = (res >> 6) & 1; break;
+      case 3: C = (add_amt != 0); break;
+    }
+  }
+  SET_NEGATIVE(pre & 0x80);
+  SET_ZERO(pre == 0);
+  A = res;
+  SET_CARRY(C);
+  SET_OVERFLOW(V);
 }
 
 void mos6502::Op_DCP(uint16_t src)
